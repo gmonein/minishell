@@ -347,10 +347,16 @@ char	**dup_env(char **env)
 	return (res);
 }
 
+void	sig_handler(int signal)
+{
+	return ;
+}
+
 int		main(int argc, char **argv, char **base_env)
 {
 	char		**env;
 
+	signal(SIGINT, sig_handler);
 	env = dup_env(base_env);
 	minishell_loop(env);
 	return (0);
