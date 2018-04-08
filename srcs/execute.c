@@ -19,25 +19,26 @@ char	*search_executable(char *exec, char **env)
 	char	*buf;
 	int		i;
 
-	key = get_env_key("PATH", env);
-	if (!key)
+	if (!(key = get_env_key("PATH", env)))
 		return (ft_strdup(exec));
 	buf = ft_memalloc(sizeof(char) * (PATH_MAX + 1));
 	path = ft_strsplit_c(*key, ':');
 	i = -1;
 	while (path[++i])
 	{
-		ft_strcpy(buf, path[i]);
-		ft_strcat(buf, "/");
-		ft_strcat(buf, exec);
+		ft_strcat(ft_strcat(ft_strcpy(buf, path[i]), "/"), exec);
 		if (!access(buf, X_OK))
 		{
-			free(path[0]);
+			if (path[0])
+				free(path[0]);
 			free(path);
 			return (buf);
 		}
 	}
-	return (ft_strdup(exec));
+	if (path[0])
+		free(path[0]);
+	free(path);
+	return (ft_strcpy(buf, exec));
 }
 
 int		minishell_execute_fork(char *exec_name, char **args, char **env)
@@ -68,7 +69,6 @@ int		minishell_launch(char **args, char **env)
 {
 	char	*exec_name;
 	pid_t	pid;
-	pid_t	wpid;
 	int		status;
 
 	exec_name = search_executable(args[0], env);
@@ -82,9 +82,9 @@ int		minishell_launch(char **args, char **env)
 	}
 	else
 	{
-		wpid = waitpid(pid, &status, WUNTRACED);
+		waitpid(pid, &status, WUNTRACED);
 		while (!WIFEXITED(status) && !WIFSIGNALED(status))
-			wpid = waitpid(pid, &status, WUNTRACED);
+			waitpid(pid, &status, WUNTRACED);
 	}
 	free(exec_name);
 	return (1);

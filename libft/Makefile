@@ -12,7 +12,7 @@
 
 NAME = libft.a
 
-HEADER = includes
+HEADER = include
 
 SRC = get_next_line.c \
 	ft_atoi.c \

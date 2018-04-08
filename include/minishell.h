@@ -23,7 +23,11 @@
 # include <signal.h>
 # include <sys/stat.h>
 # include <sys/types.h>
-# include "libft/includes/libft.h"
+# include "libft.h"
+
+# ifndef ARG_MAX
+#  define ARG_MAX 512
+# endif
 
 # define PROMPT			"$> "
 # define ALLOC_FAILED	"minishell: allocation error\n"
