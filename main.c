@@ -74,6 +74,8 @@ int		minishell_execute(char **args, char **env)
 	pid_t	wpid;
 	int		status;
 
+	if (!args[0])
+		return (1);
 	pid = fork();
 	if (pid == 0)
 	{
