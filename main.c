@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <limits.h>
+#include <signal.h>
 #include "libft/includes/libft.h"
 
 #define ALLOC_FAILED	"minishell: allocation error\n"
@@ -163,17 +164,6 @@ int		ft_getchar(void)
 	return (res);
 }
 
-void	*ft_realloc(void *ptr, size_t size, size_t new_size)
-{
-	void	*new;
-
-	new = (char *)malloc(sizeof(char) * new_size);
-	bzero(new, sizeof(char) * new_size);
-	memcpy(new, ptr, sizeof(char) * size);
-	free(ptr);
-	return (new);
-}
-
 char	*minishell_read_line(void)
 {
 	char	*line;
@@ -193,7 +183,7 @@ int		is_white_space(char c)
 char	**minishell_split_line(char *line)
 {
 	char		**res;
-	int			nb_word;
+	size_t		nb_word;
 	int			i;
 	int			j;
 
@@ -216,12 +206,69 @@ char	**minishell_split_line(char *line)
 	return (res);
 }
 
+char	**ft_strsplit_c(char *str, char c)
+{
+	char		**res;
+	size_t		nb_word;
+	int			i;
+	int			j;
+	char		*line;
+
+	line = ft_strdup(str);
+	nb_word = 0;
+	i = -1;
+	while (line[++i])
+		if (line[i] != c && (i == 0 || line[i - 1] == c))
+			nb_word++;
+	res = (char **)malloc(sizeof(char *) * (nb_word + 1));
+	i = -1;
+	j = -1;
+	while (line[++i])
+		if (line[i] != c && (i == 0 || line[i - 1] == c))
+			res[++j] = &line[i];
+	res[++j] = NULL;
+	i = -1;
+	while (line[++i])
+		if (line[i] == c)
+			line[i] = '\0';
+	return (res);
+}
+
+char	*search_executable(char *exec, char **env)
+{
+	char	**key;
+	char	**path;
+	char	*buf;
+	int		i;
+
+	key = get_env_key("PATH", env);
+	if (!key)
+		return (ft_strdup(exec));
+	buf = ft_memalloc(sizeof(char) * (PATH_MAX + 1));
+	path = ft_strsplit_c(*key, ':');
+	i = -1;
+	while (path[++i])
+	{
+		ft_strcpy(buf, path[i]);
+		ft_strcat(buf, "/");
+		ft_strcat(buf, exec);
+		if (!access(buf, X_OK))
+		{
+			free(path[0]);
+			free(path);
+			return (buf);
+		}
+	}
+	return (ft_strdup(exec));
+}
+
 int		minishell_execute(char **args, char **env)
 {
 	pid_t	pid;
 	pid_t	wpid;
 	int		status;
 	int		i;
+	char	*exec_name;
 
 	if (!args[0])
 		return (1);
@@ -232,10 +279,11 @@ int		minishell_execute(char **args, char **env)
 			g_built_in[i].fct(args, env);
 			return (1);
 		}
+	exec_name = search_executable(args[0], env);
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(args[0], args, env) == -1)
+		if (execve(exec_name, args, env) == -1)
 		{
 			perror("minishell");
 			exit(EXIT_FAILURE);
@@ -243,17 +291,21 @@ int		minishell_execute(char **args, char **env)
 		exit(EXIT_SUCCESS);
 	}
 	else if (pid < 0)
+	{
 		perror("minishell");
+		exit(EXIT_SUCCESS);
+	}
 	else
 	{
 		wpid = waitpid(pid, &status, WUNTRACED);
 		while (!WIFEXITED(status) && !WIFSIGNALED(status))
 			wpid = waitpid(pid, &status, WUNTRACED);
 	}
+	free(exec_name);
 	return (1);
 }
 
-#define PROMPT	"> "
+#define PROMPT	"$> "
 int		minishell_loop(char **env)
 {
 	char	*line;
@@ -301,4 +353,5 @@ int		main(int argc, char **argv, char **base_env)
 
 	env = dup_env(base_env);
 	minishell_loop(env);
+	return (0);
 }
