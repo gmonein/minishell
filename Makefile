@@ -1,7 +1,7 @@
 NAME = minishell
 
 CPP = gcc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g3
 DIR_LIB = libft
 HEADER = -I include -I $(DIR_LIB)/include/
 
@@ -11,7 +11,7 @@ SOURCES = misc.c\
     env.c\
     execute.c\
     main.c
- 
+
 DIR_O = objs
 DIR_S = srcs
 

@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:17 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/10 17:54:22 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:38:43 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,25 @@ char	*search_executable(char *exec, char **env)
 	char	**path;
 	char	*buf;
 	int		i;
+	char	*res;
 
 	if (!(key = get_env_key("PATH", env)))
 		return (ft_strdup(exec));
 	buf = ft_memalloc(sizeof(char) * (PATH_MAX + 1));
-	path = ft_strsplit_c(*key, ':');
+	path = ft_strsplit(*key, ':');
 	i = -1;
+	res = exec;
 	while (path[++i])
 	{
 		ft_strcat(ft_strcat(ft_strcpy(buf, path[i]), "/"), exec);
-		if (!access(buf, X_OK))
-		{
-			if (path[0])
-				free(path[0]);
-			free(path);
-			return (buf);
-		}
+		if (!access(buf, X_OK) && (res = buf) != NULL)
+			break ;
 	}
-	if (path[0])
-		free(path[0]);
+	i = -1;
+	while (path[++i])
+		free(path[i]);
 	free(path);
-	return (ft_strcpy(buf, exec));
+	return (ft_strcpy(buf, res));
 }
 
 int		minishell_execute_fork(char *exec_name, char **args, char **env)

@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:26 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/10 18:45:56 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:31:47 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int		minishell_treat_line(char *line, char **env)
 	int		status;
 	int		i;
 
-	lines = ft_strsplit_c(line, ';');
+	lines = ft_strsplit(line, ';');
 	i = -1;
 	if (lines)
 	{
@@ -51,10 +51,10 @@ int		minishell_treat_line(char *line, char **env)
 			args = minishell_split_line(lines[i]);
 			status = minishell_execute(args, env);
 			free(args);
+			free(lines[i]);
 		}
-		ft_putstr(PROMPT);
-		free(line);
 		free(lines);
+		ft_putstr(PROMPT);
 		return (status);
 	}
 	return (1);
@@ -69,7 +69,10 @@ int		minishell_loop(char **env)
 	write(1, PROMPT, strlen(PROMPT));
 	while (status)
 		if ((line = minishell_read_line()))
+		{
 			status = minishell_treat_line(line, env);
+			free(line);
+		}
 	return (0);
 }
 

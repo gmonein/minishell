@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/13 23:24:24 by gmonein           #+#    #+#             */
-/*   Updated: 2016/11/15 01:07:47 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:38:44 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ char			**ft_strsplit(char const *s, char c)
 	{
 		while (*s == c && *s != '\0')
 			s++;
-		if (!(split[j] = (char *)malloc(sizeof(char) * ft_word_len(s, c))))
-			return (NULL);
 		split[j] = ft_strsub(s, 0, ft_word_len(s, c));
 		s = s + ft_word_len(s, c);
 		j++;
