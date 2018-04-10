@@ -1,7 +1,7 @@
 NAME = minishell
 
 CPP = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
 DIR_LIB = libft
 HEADER = -I include -I $(DIR_LIB)/include/
 

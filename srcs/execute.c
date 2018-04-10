@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:17 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/08 16:40:56 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 17:54:22 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,11 @@ int		minishell_launch(char **args, char **env)
 	}
 	else
 	{
+		g_waiting_child = 1;
 		waitpid(pid, &status, WUNTRACED);
 		while (!WIFEXITED(status) && !WIFSIGNALED(status))
 			waitpid(pid, &status, WUNTRACED);
+		g_waiting_child = 0;
 	}
 	free(exec_name);
 	return (1);

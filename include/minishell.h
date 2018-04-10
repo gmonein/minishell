@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:52 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/08 16:37:26 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 17:53:05 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ typedef enum	e_built_in_list
 	EXIT,
 	END_BUILTIN
 }				t_built_in_list;
+
+int				g_waiting_child;
 
 char			**ft_strsplit_c(char *str, char c);
 char			**minishell_split_line(char *line);
