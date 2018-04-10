@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:26 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/10 18:44:07 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 18:45:56 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		minishell_treat_line(char *line, char **env)
 			free(args);
 		}
 		ft_putstr(PROMPT);
-		free(lines[0]);
+		free(line);
 		free(lines);
 		return (status);
 	}
