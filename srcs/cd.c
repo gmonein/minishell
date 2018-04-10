@@ -6,25 +6,41 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:18:02 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/08 16:19:12 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 18:14:46 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*get_home_path(char **env)
+{
+	char		**home_key;
+
+	home_key = get_env_key("HOME", env);
+	if (!home_key)
+	{
+		ft_putstr_fd("minishell: No home directory in environement\n", 2);
+		return (NULL);
+	}
+	return (&(*home_key)[ft_strlen("HOME=")]);
+}
 
 char	*minishell_cd_getpath(char **args, char **env)
 {
 	char		*path;
 	char		**old_pwd;
 
-	if (!args[1] || args[2])
+	if (args[1] && args[2])
 	{
 		errno = EINVAL;
 		perror("minishell");
 		return (NULL);
 	}
-	path = args[1];
-	if (!ft_strcmp(args[1], "-"))
+	if (args[1])
+		path = args[1];
+	else
+		path = get_home_path(env);
+	if (path && !ft_strcmp(path, "-"))
 	{
 		old_pwd = get_env_key("OLDPWD", env);
 		if (!old_pwd)

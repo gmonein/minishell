@@ -6,7 +6,7 @@
 /*   By: gmonein <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 16:17:44 by gmonein           #+#    #+#             */
-/*   Updated: 2018/04/10 17:08:49 by gmonein          ###   ########.fr       */
+/*   Updated: 2018/04/10 18:44:06 by gmonein          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,13 @@ char	**dup_env(char **env)
 	while (env[++i])
 		res[i] = ft_strdup(env[i]);
 	res[i] = NULL;
+	return (res);
+}
+
+int		ft_getchar(void)
+{
+	int		res;
+
+	read(1, &res, 1);
 	return (res);
 }
